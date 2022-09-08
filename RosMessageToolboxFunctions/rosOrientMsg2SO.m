@@ -30,6 +30,13 @@ switch lower( class(msg) )
     case lower( 'ros.msggen.geometry_msgs.Pose' )
         % User inputted a message one level too high. Adjust.
         msg = msg.Orientation;
+
+    % Handling data coming from different message besides VRPN
+    case lower( 'ros.msggen.geometry_msgs.Transform' )
+        msg = msg.Rotation;
+    case lower( 'ros.msg.geometry_msgs.TransformStamped' )
+        msg = msg.Transform.Rotation;
+
     otherwise
         badClass = class(msg);
         error('Input message is class "%s", expected class "%s".',...

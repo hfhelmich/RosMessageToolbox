@@ -5,7 +5,7 @@ function out = rosPointMsg2Array(msg)
 %   - m.Pose.Position is a Point message
 %
 %   Input(s)
-%       msg - ROS message containing Position data
+%       msg - Any ROS message containing Position data
 %
 %   Output(s)
 %       out - 3-element array containing x/y/z data
@@ -30,6 +30,15 @@ switch lower( class(msg) )
     case lower( 'ros.msggen.geometry_msgs.Pose' )
         % User inputted a message one level too high. Adjust.
         msg = msg.Position;
+
+    % Handling data coming from different message besides VRPN
+    case lower( 'ros.msggen.geometry_msgs.Vector3' )
+        % Good. Holds same data as goodClass
+    case lower( 'ros.msg.geometry_msgs.TransformStamped' )
+        msg = msg.Transform.Translation;
+    case lower( 'ros.msggen.geometry_msgs.Transform' )
+        msg = msg.Translation; 
+
     otherwise
         badClass = class(msg);
         error('Input message is class "%s", expected class "%s".',...
